@@ -1,7 +1,11 @@
 const {createUser} = require('./services/user.service');
-const fileService = require('./services/file.service')
+const {sortFolder} = require('./services/file.service')
 
-let user = createUser('Vova', 27);
+// let user = createUser('Vova', 27);
+//
+// console.log(user);
+// user.sayHello()
 
-console.log(user);
-user.sayHello()
+
+sortFolder('boys', 'female', 'girls')
+
