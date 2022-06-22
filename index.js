@@ -2,7 +2,9 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 
-mongoose.connect('mongodb://localhost:27017/dec');
+mongoose.connect('mongodb://localhost:27017/dec-2021')
+    .then(()=>console.log('DB ok!'))
+    .catch((err)=> console.log('DB err', err))
 
 const {urlencoded} = require("express");
 const {userRouter} = require("./routes");
@@ -16,10 +18,16 @@ app.use('/users',userRouter)
 
 app.use('*',(req, res) => {
     res.status(404).json('Page not found')
-})
-app.use((err, req, res, next)=>{
-    res
 
+})
+
+app.use((err, req, res, next) =>{
+   res
+       .status(err.status  || 500)
+       .json({
+           error: err.message || 'Unknown error',
+           code: err.status || 500
+       })
 })
 
 
