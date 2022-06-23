@@ -1,10 +1,12 @@
 const jwt = require('jsonwebtoken')
+const {CustomError} = require("../Errors");
+const {ACCESSES_TOKEN_SECRET, REFRESH_TOKEN_SECRET} = require("../constants/config.constant");
 
 
 
 function generatedTokens(payload = {}) {
-    const access_token =  jwt.sign(payload, 'svds', {expiresIn: '15m'})
-    const refresh_token = jwt.sign(payload, 'ksjc', {expiresIn: '30d'})
+    const access_token =  jwt.sign(payload, ACCESSES_TOKEN_SECRET, {expiresIn: '15m'})
+    const refresh_token = jwt.sign(payload, REFRESH_TOKEN_SECRET, {expiresIn: '30d'})
 
     return{
         access_token,
@@ -12,6 +14,17 @@ function generatedTokens(payload = {}) {
     }
 }
 
+function checkAccessToken(token = ''){
+    try{
+        jwt.verify(token,ACCESSES_TOKEN_SECRET)
+    }catch (e){
+     throw new  CustomError('Token not valid', 401)
+    }
+
+}
+
 module.exports = {
-    generatedTokens
+    checkAccessToken,
+    generatedTokens,
+
 }

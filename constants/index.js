@@ -1,3 +1,4 @@
 module.exports = {
-    regexConstants: require('./regexp.constant')
+    regexConstants: require('./regexp.constant'),
+    configConstants: require('./config.constant')
 }

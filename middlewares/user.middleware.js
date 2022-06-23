@@ -110,5 +110,20 @@ module.exports = {
             next(e);
         }
     },
+    CheckUserIsPresent: async (req, res, next) => {
+        try {
 
+            const { email } = req.body
+
+            const userByEmail = await User.findOne({email});
+            if (!userByEmail){
+                throw new CustomError('User not found',404);
+            }
+
+            req.user = userByEmail
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
 }
