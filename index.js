@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 
 
 mongoose.connect('mongodb://localhost:27017/dec-2021')
-    .then(()=>console.log('DB ok!'))
-    .catch((err)=> console.log('DB err', err))
+
 
 const {urlencoded} = require("express");
 const {userRouter} = require("./routes");
