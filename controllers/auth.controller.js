@@ -17,8 +17,31 @@ module.exports ={
                 userId: _id,
                 ...tokens
             })
+            res.json({
+                user: req.user,
+                ...tokens
+            })
 
             next()
+        }catch (e){
+            next(e)
+        }
+    },
+    refreshToken: async (req, res, next )=>{
+        try{
+            const { userId, refresh_token } = req.tokenInfo
+
+            await OAuth.deleteOne({refresh_token})
+
+
+            const tokens = generatedTokens()
+
+            await OAuth.create({
+                userId,
+                ...tokens
+            })
+
+            res.json(tokens)
         }catch (e){
             next(e)
         }
