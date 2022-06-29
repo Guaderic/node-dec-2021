@@ -1,13 +1,14 @@
 const {CustomError} = require("../Errors");
 const {checkToken} = require("../services/token.service");
 const {OAuth} = require("../dataBase");
+const {AUTHORIZATION} = require("../constants/constants");
 
 
 module.exports = {
     checkAccessToken: async (req, res, next)=>{
         try{
 
-            const access_token = req.get('Authorization');
+            const access_token = req.get(AUTHORIZATION);
 
             if(!access_token){
                 throw new CustomError('No token', 401);
@@ -31,7 +32,7 @@ module.exports = {
     checkRefreshToken: async (req, res, next)=>{
         try{
 
-            const refresh_token = req.get('Authorization');
+            const refresh_token = req.get(AUTHORIZATION);
 
             if(!refresh_token){
                 throw new CustomError('No token', 401);

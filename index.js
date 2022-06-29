@@ -1,38 +1,32 @@
-const express = require('express')
-const mongoose = require('mongoose')
-require('dotenv').config()
+const express = require('express');
+const mongoose = require('mongoose');
+const path = require('path');
+require('dotenv').config({ path: path.join(process.cwd(), 'environments', `${process.env.MODE}.env`)})
 
-mongoose.connect('mongodb://localhost:27017/dec-2021')
+const { authRouter, userRouter } = require('./routes');
+const { configs } = require('./constants/configs');
 
-
-const {urlencoded} = require("express");
-
-const {userRouter, authRouter} = require("./routes");
-
+mongoose.connect(configs.MONGO_URL);
 
 const app = express();
 app.use(express.json());
-app.use(urlencoded({extended:true}));
 
-app.use('/users',userRouter);
-app.use('/auth',authRouter);
+app.use('/auth', authRouter);
+app.use('/users', userRouter);
 
+app.use('*', (req, res) => {
+    res.status(404).json('Route not found');
+});
 
-app.use('*',(req, res) => {
-    res.status(404).json('Page not found');
+app.use((err, req, res, next) => {
+    res
+        .status(err.status || 500)
+        .json({
+            error: err.message || 'Unknown Error',
+            code: err.status || 500
+        });
+});
 
-})
-
-app.use((err, req, res, next) =>{
-   res
-       .status(err.status  || 500)
-       .json({
-           error: err.message || 'Unknown error',
-           code: err.status || 500
-       })
-})
-
-
-app.listen(5000, () => {
-    console.log('Server listen 5000')
-})
+app.listen(configs.PORT, () => {
+    console.log(`Started on port ${configs.PORT}`);
+});

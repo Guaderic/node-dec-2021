@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const {CustomError} = require("../Errors");
-const {ACCESSES_TOKEN_SECRET, REFRESH_TOKEN_SECRET} = require("../constants/config.constant");
+const {ACCESSES_TOKEN_SECRET, REFRESH_TOKEN_SECRET} = require("../constants/constants");
 const {configConstants} = require("../constants");
 
 
