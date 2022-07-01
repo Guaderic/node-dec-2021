@@ -5,9 +5,9 @@ require('dotenv').config({ path: path.join(process.cwd(), 'environments', `${pro
 
 const { authRouter, userRouter } = require('./routes');
 const { configs } = require('./constants/configs');
-const {config} = require("dotenv");
 
-mongoose.connect(configs.MONGO_URL);
+
+console.log(mongoose.connect(configs.MONGO_URL));
 
 const app = express();
 app.use(express.json());
