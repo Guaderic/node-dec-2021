@@ -1,17 +1,14 @@
 const bcrypt = require('bcrypt');
-const {CustomError} = require("../Errors");
 
+const { CustomError } = require('../errors');
 
 module.exports = {
-    hashPassword: (password) => bcrypt.hash(password, 10),
-    comparePasswords: async (hashPassword, password) => {
-       const isPasswordSame = await bcrypt.compare(password, hashPassword);
+  hashPassword: (password) => bcrypt.hash(password, 10),
+  comparePassword: async (hashPassword, password) => {
+    const isPasswordsSame = await bcrypt.compare(password, hashPassword);
 
-       if(!isPasswordSame){
-           throw new CustomError('Email or password is wrong', 400)
-       }
+    if (!isPasswordsSame) {
+      throw new CustomError(`Wrong email or password`);
     }
-
-
-
+  }
 }

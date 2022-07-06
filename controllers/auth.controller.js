@@ -1,54 +1,48 @@
-const {generatedTokens} = require("../services/token.service");
-const {passwordService, emailService} = require("../services");
-const {OAuth} = require("../dataBase");
-const {emailActionTypeEnum} = require("../enums");
-const {sendMail} = require("../services/email.service");
+const { passwordService, emailService } = require('../services');
+const { generateAuthTokens } = require('../services/token.service');
+const { OAuth } = require('../dataBase');
+const { emailActionTypeEnum } = require('../enums');
 
+module.exports = {
+    login: async (req, res, next) => {
+        try {
+            const { password: hashPassword, _id } = req.user;
+            const { password } = req.body;
 
-module.exports ={
-    login: async (req, res, next )=>{
-        try{
-            const { password : hashPassword, _id } = req.user
-            const { password } = req.body
+            await passwordService.comparePassword(hashPassword, password);
 
-            await passwordService.comparePasswords(hashPassword, password)
-            await sendMail()
-
-            const tokens = generatedTokens()
+            const tokens = generateAuthTokens();
 
             await OAuth.create({
                 userId: _id,
                 ...tokens
             })
+
             res.json({
                 user: req.user,
                 ...tokens
-            })
-
-            next()
-        }catch (e){
-            next(e)
+            });
+        } catch (e) {
+            next(e);
         }
     },
-    refreshToken: async (req, res, next )=>{
-        try{
-            const { userId, refresh_token } = req.tokenInfo
 
-            await OAuth.deleteOne({refresh_token})
+    refreshToken: async (req, res, next) => {
+        try {
+            const { userId, refresh_token } = req.tokenInfo;
 
+            await OAuth.deleteOne({ refresh_token });
 
-            const tokens = generatedTokens()
+            const tokens = generateAuthTokens();
 
-            await OAuth.create({
-                userId,
-                ...tokens
-            })
+            await OAuth.create({ userId, ...tokens });
 
-            res.json(tokens)
-        }catch (e){
-            next(e)
+            res.json(tokens);
+        } catch (e) {
+            next(e);
         }
     },
+
     logout: async (req, res, next) => {
         try {
             const { access_token, user } = req;
@@ -89,4 +83,4 @@ module.exports ={
             next(e);
         }
     },
-}
+};

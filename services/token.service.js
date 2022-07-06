@@ -1,34 +1,33 @@
-const jwt = require('jsonwebtoken')
-const {CustomError} = require("../Errors");
-const {ACCESSES_TOKEN_SECRET, REFRESH_TOKEN_SECRET} = require("../constants/constants");
-const {configConstants} = require("../constants");
+const jwt = require('jsonwebtoken');
 
+const { configs } = require("../configs");
+const { CustomError } = require('../errors');
+const { tokenTypeEnum } = require('../enums');
 
+function generateAuthTokens(payload = {}) {
+  const access_token = jwt.sign(payload, configs.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+  const refresh_token = jwt.sign(payload, configs.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
 
-function generatedTokens(payload = {}) {
-    const access_token =  jwt.sign(payload, ACCESSES_TOKEN_SECRET, {expiresIn: '15m'})
-    const refresh_token = jwt.sign(payload, REFRESH_TOKEN_SECRET, {expiresIn: '30d'})
-
-    return{
-        access_token,
-        refresh_token
-    }
+  return {
+    access_token,
+    refresh_token
+  }
 }
 
-function checkToken(token = '', tokenType = 'access'){
-    try{
-        let secret
-        if(tokenType === 'access') secret = configConstants.ACCESSES_TOKEN_SECRET
-        if(tokenType === 'refresh') secret = configConstants.REFRESH_TOKEN_SECRET
-        jwt.verify(token, secret)
-    }catch (e){
-     throw new  CustomError('Token not valid', 401)
-    }
+function checkToken(token = '', tokenType = tokenTypeEnum.ACCESS) {
+  try {
+    let secret;
 
+    if(tokenType === tokenTypeEnum.ACCESS) secret = configs.ACCESS_TOKEN_SECRET;
+    if(tokenType === tokenTypeEnum.REFRESH) secret = configs.REFRESH_TOKEN_SECRET;
+
+    return jwt.verify(token, secret);
+  } catch (e) {
+    throw new CustomError(`Token not valid`, 401);
+  }
 }
 
 module.exports = {
-    checkToken,
-    generatedTokens,
-
+  checkToken,
+  generateAuthTokens
 }

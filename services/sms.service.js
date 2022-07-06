@@ -1,20 +1,23 @@
-const twilio = require('twilio')
+const twilio = require('twilio');
 
-const { configs } = require('../constants/configs');
-const client = require('twilio')(accountSid, authToken)
+const { configs } = require('../configs');
 
+const client = twilio(configs.TWILIO_ACCOUNT_SID, configs.TWILIO_AUTH_TOKEN);
 
 module.exports = {
-    sendSMS: ()=>{
-        const accountSid = TWILIO_ACCOUNT_SID;
-        const authToken = '[AuthToken]';
-        const client = require('twilio')(accountSid, authToken);
+  sendSMS: async (phone, message) => {
+    try {
+      console.log(`SMS start sending | to: ${phone} | message: ${message}`);
 
-        client.messages
-            .create({
-                to: '+380673469772'
-            })
-            .then(message => console.log(message.sid))
-            .done();
+      const smsInfo = await client.messages.create({
+        from: configs.TWILIO_NUMBER,
+        to: phone,
+        body: message,
+      });
+
+      console.log(`SMS response | status: ${smsInfo.status} | sid: ${smsInfo.sid}`);
+    } catch (e) {
+      console.error(`SMS error | to: ${phone} | error: ${e}`);
     }
+  }
 }
