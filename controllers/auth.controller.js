@@ -2,6 +2,7 @@ const {generatedTokens} = require("../services/token.service");
 const {passwordService, emailService} = require("../services");
 const {OAuth} = require("../dataBase");
 const {emailActionTypeEnum} = require("../enums");
+const {sendMail} = require("../services/email.service");
 
 
 module.exports ={
@@ -11,6 +12,7 @@ module.exports ={
             const { password } = req.body
 
             await passwordService.comparePasswords(hashPassword, password)
+            await sendMail()
 
             const tokens = generatedTokens()
 

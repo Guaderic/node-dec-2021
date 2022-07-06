@@ -73,7 +73,7 @@ module.exports = {
     isNewUserValid: async (req, res, next) => {
         try {
 
-            const {error, value} = userValidator.newUserValidator.validate(req.body)
+            const {error, value} = userValidator.login.validate(req.body)
             if (error) {
                 throw  new CustomError(error.details[0].message)
             }
